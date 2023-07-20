@@ -1,0 +1,60 @@
+import logging
+from telegram import Update
+from telegram.ext import Updater, CommandHandler, CallbackContext
+
+# Your Telegram bot token from BotFather
+TOKEN = 'YOUR_TELEGRAM_BOT_TOKEN'
+
+# Set up logging
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+
+# Guided meditation sessions
+MEDITATION_SESSIONS = [
+    'Close your eyes and take a deep breath. Inhale slowly for 4 seconds, hold your breath for 4 seconds, and exhale for 6 seconds. Repeat this breathing pattern for 5 minutes.',
+    'Imagine yourself in a peaceful place. Visualize a serene beach with gentle waves or a quiet forest with tall trees. Spend 10 minutes in this imaginary place, focusing on the sights and sounds around you.',
+    'Listen to calming music or nature sounds for 15 minutes. Pay attention to the melodies and let the music guide your mind to a relaxed state.',
+]
+
+# Relaxation techniques
+RELAXATION_TECHNIQUES = [
+    'Progressive Muscle Relaxation: Start from your toes and gradually tense and relax each muscle group in your body. Work your way up to your head, focusing on releasing tension in each area.',
+    'Deep Breathing: Inhale deeply through your nose for 4 seconds, hold your breath for 4 seconds, and exhale slowly through your mouth for 6 seconds. Repeat this cycle for 5 minutes.',
+    'Visualization: Close your eyes and imagine yourself in a peaceful environment. It could be a beach, garden, or any place that brings you tranquility. Spend a few minutes fully immersing yourself in this mental space.',
+]
+
+# Command handler for /start
+def start(update: Update, _: CallbackContext) -> None:
+    user = update.effective_user
+    update.message.reply_text(f'Hello, {user.mention_html()}! I am your Meditation and Relaxation bot. '
+                              f'Use /meditate for a guided meditation session, '
+                              f'and /relax for relaxation techniques.')
+
+# Command handler for /meditate
+def meditate(update: Update, _: CallbackContext) -> None:
+    session = MEDITATION_SESSIONS[0]  # You can randomly choose a session by using random.choice(MEDITATION_SESSIONS)
+    update.message.reply_text(f'Guided Meditation Session:\n{session}')
+
+# Command handler for /relax
+def relax(update: Update, _: CallbackContext) -> None:
+    technique = RELAXATION_TECHNIQUES[0]  # You can randomly choose a technique by using random.choice(RELAXATION_TECHNIQUES)
+    update.message.reply_text(f'Relaxation Technique:\n{technique}')
+
+def main() -> None:
+    updater = Updater(TOKEN)
+
+    # Get the dispatcher to register handlers
+    dp = updater.dispatcher
+
+    # Register command handlers
+    dp.add_handler(CommandHandler("start", start))
+    dp.add_handler(CommandHandler("meditate", meditate))
+    dp.add_handler(CommandHandler("relax", relax))
+
+    # Start the Bot
+    updater.start_polling()
+
+    # Run the bot until the user presses Ctrl-C
+    updater.idle()
+
+if __name__ == '__main__':
+    main()
